@@ -24,8 +24,8 @@ public class ItemController {
     @PostMapping
     public ItemDto createItem(@RequestBody @Valid ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") Long ownerId) {
         log.info("Получен запрос к эндпоинту: POST: /items");
-        if(itemDto.getDescription() == null || itemDto.getName() == null || itemDto.getAvailable() == null ||
-                itemDto.getName().equals("")){
+        if (itemDto.getDescription() == null || itemDto.getName() == null || itemDto.getAvailable() == null ||
+                itemDto.getName().equals("")) {
             throw new EmptyData("Заполнены не все данные по создаваемой вещи");
         }
         return itemService.createItem(itemDto, ownerId);

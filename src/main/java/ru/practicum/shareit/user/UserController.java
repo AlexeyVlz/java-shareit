@@ -15,15 +15,16 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
     @PostMapping
-    public UserDto createUser (@RequestBody @Valid UserDto userDto) {
+    public UserDto createUser(@RequestBody @Valid UserDto userDto) {
         log.info("Получен запрос к эндпоинту: POST: /users");
-        if(userDto.getEmail() == null || userDto.getName() == null) {
+        if (userDto.getEmail() == null || userDto.getName() == null) {
             throw new EmptyData("не заполнена строка имени или электронной почты пользователя");
         }
         return userService.createUser(userDto);

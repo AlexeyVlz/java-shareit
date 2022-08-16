@@ -37,19 +37,19 @@ public class InMemoryUserRepository implements UserRepository {
 
     @Override
     public UserDto updateUser(Long userId, UserDto userDto) {
-        if(!users.containsKey(userId)){
+        if (!users.containsKey(userId)) {
             throw new NullPointerException(String.format("Пользователь с id %d в базе отсутствует", userId));
         }
-        for(User user : users.values()) {
-            if(!user.getId().equals(userId) && user.getEmail().equals(userDto.getEmail())){
+        for (User user : users.values()) {
+            if (!user.getId().equals(userId) && user.getEmail().equals(userDto.getEmail())) {
                 throw new ConflictDataExeption("Данная электронная почта уже зарегистрирована");
             }
         }
         User updatedUser = users.get(userId);
-        if(userDto.getName() != null){
-           updatedUser.setName(userDto.getName());
+        if (userDto.getName() != null) {
+            updatedUser.setName(userDto.getName());
         }
-        if(userDto.getEmail() != null){
+        if (userDto.getEmail() != null) {
             updatedUser.setEmail(userDto.getEmail());
         }
         return UserMapper.mapUserToUserDto(updatedUser);
@@ -57,7 +57,7 @@ public class InMemoryUserRepository implements UserRepository {
 
     @Override
     public void deleteUser(Long userId) {
-        if(!users.containsKey(userId)){
+        if (!users.containsKey(userId)) {
             throw new NullPointerException(String.format("Пользователь с id %d в базе отсутствует", userId));
         }
         users.remove(userId);
@@ -65,7 +65,7 @@ public class InMemoryUserRepository implements UserRepository {
 
     @Override
     public UserDto getUserById(Long userId) {
-        if(!users.containsKey(userId)){
+        if (!users.containsKey(userId)) {
             throw new NullPointerException(String.format("Пользователь с id %d в базе отсутствует", userId));
         }
         return UserMapper.mapUserToUserDto(users.get(userId));
@@ -74,7 +74,7 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public List<UserDto> getAllUsers() {
         List<UserDto> allUsers = new ArrayList<>();
-        for(User user : users.values()){
+        for (User user : users.values()) {
             allUsers.add(UserMapper.mapUserToUserDto(user));
         }
         return allUsers;
