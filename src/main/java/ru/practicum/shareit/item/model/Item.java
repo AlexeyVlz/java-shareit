@@ -1,9 +1,7 @@
 package ru.practicum.shareit.item.model;
 
 import lombok.Data;
-import lombok.NonNull;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 
 @Data
