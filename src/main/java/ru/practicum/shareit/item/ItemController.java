@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exception.EmptyData;
@@ -8,9 +9,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import javax.validation.Valid;
 import java.util.List;
 
-/**
- * // TODO .
- */
+@Slf4j
 @RestController
 @RequestMapping("/items")
 public class ItemController {
@@ -24,7 +23,9 @@ public class ItemController {
 
     @PostMapping
     public ItemDto createItem(@RequestBody @Valid ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") Long ownerId) {
-        if(itemDto.getDescription() == null || itemDto.getName() == null || itemDto.getAvailable() == null){
+        log.info("Получен запрос к эндпоинту: POST: /items");
+        if(itemDto.getDescription() == null || itemDto.getName() == null || itemDto.getAvailable() == null ||
+                itemDto.getName().equals("")){
             throw new EmptyData("Заполнены не все данные по создаваемой вещи");
         }
         return itemService.createItem(itemDto, ownerId);
@@ -33,22 +34,26 @@ public class ItemController {
     @PatchMapping("/{itemId}")
     public ItemDto updateItem(@PathVariable Long itemId, @RequestBody @Valid ItemDto itemDto,
                               @RequestHeader("X-Sharer-User-Id") Long ownerId) {
+        log.info("Получен запрос к эндпоинту: PATCH: /items/{itemId}");
         return itemService.updateItem(itemDto, itemId, ownerId);
 
     }
 
     @GetMapping("/{itemId}")
     public ItemDto getItemById(@PathVariable Long itemId, @RequestHeader("X-Sharer-User-Id") Long ownerId) {
+        log.info("Получен запрос к эндпоинту: GET: /items/{itemId}");
         return itemService.getItemById(itemId, ownerId);
     }
 
     @GetMapping
     public List<ItemDto> getAllItemsByOwnerId(@RequestHeader("X-Sharer-User-Id") Long ownerId) {
+        log.info("Получен запрос к эндпоинту: GET: /items");
         return itemService.getAllItemsByOwnerId(ownerId);
     }
 
     @GetMapping("/search")
     public List<ItemDto> searchItems(@RequestParam String text) {
+        log.info("Получен запрос к эндпоинту: GET: /items/search");
         return itemService.searchItems(text);
     }
 }

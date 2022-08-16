@@ -1,21 +1,19 @@
 package ru.practicum.shareit.user.model;
 
 import lombok.Data;
-import lombok.NonNull;
 
 import javax.validation.constraints.Email;
 
 @Data
 public class User {
 
-    Long userId;
-   // @NonNull
-    String name;
-  //  @Email @NonNull
-    String email;
+    private Long id;
+    private String name;
+    @Email
+    private String email;
 
-    public User(Long userId, String name, String email) {
-        this.userId = userId;
+    public User(Long id, String name, String email) {
+        this.id = id;
         this.name = name;
         this.email = email;
     }

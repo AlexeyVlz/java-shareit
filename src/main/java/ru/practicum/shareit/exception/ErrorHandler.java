@@ -24,12 +24,25 @@ public class ErrorHandler {
         return new ErrorResponse(e.getMessage());
     }
 
+
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleEmptyData (final EmptyData e) {
         return new ErrorResponse(e.getMessage());
     }
 
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleMethodArgumentNotValidException (final MethodArgumentNotValidException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleConflictDataExeption (final ConflictDataExeption e) {
+        return new ErrorResponse(e.getMessage());
+    }
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleThrowable (final Throwable e) {

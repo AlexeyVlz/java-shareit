@@ -11,11 +11,10 @@ import javax.validation.constraints.Positive;
 public class ItemDto {
 
     @Positive
-    Long id;
-    @NotBlank
-    String name;
-    String description;
-    Boolean available;
+    private Long id;
+    private String name;
+    private String description;
+    private Boolean available;
 
     public ItemDto(Long id, String name, String description, Boolean available) {
         this.id = id;

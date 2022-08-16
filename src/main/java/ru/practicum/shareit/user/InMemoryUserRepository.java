@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user;
 
 import org.springframework.stereotype.Component;
+import ru.practicum.shareit.exception.ConflictDataExeption;
 import ru.practicum.shareit.exception.DuplicateException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
@@ -14,8 +15,12 @@ import java.util.Map;
 @Component
 public class InMemoryUserRepository implements UserRepository {
 
-    Long userId = 0L;
-    Map<Long, User> users = new HashMap<>();
+    private Long userId = 0L;
+    private final Map<Long, User> users = new HashMap<>();
+
+    public Map<Long, User> getUsers() {
+        return users;
+    }
 
     @Override
     public UserDto createUser(UserDto userDto) {
@@ -24,9 +29,9 @@ public class InMemoryUserRepository implements UserRepository {
                 throw new DuplicateException("Данная почта уже используется");
             }
         }
-        userDto.setUserId(++userId);
+        userDto.setId(++userId);
         User newUser = UserMapper.mapUserDtoToUser(userDto);
-        users.put(newUser.getUserId(), newUser);
+        users.put(newUser.getId(), newUser);
         return UserMapper.mapUserToUserDto(newUser);
     }
 
@@ -34,6 +39,11 @@ public class InMemoryUserRepository implements UserRepository {
     public UserDto updateUser(Long userId, UserDto userDto) {
         if(!users.containsKey(userId)){
             throw new NullPointerException(String.format("Пользователь с id %d в базе отсутствует", userId));
+        }
+        for(User user : users.values()) {
+            if(!user.getId().equals(userId) && user.getEmail().equals(userDto.getEmail())){
+                throw new ConflictDataExeption("Данная электронная почта уже зарегистрирована");
+            }
         }
         User updatedUser = users.get(userId);
         if(userDto.getName() != null){

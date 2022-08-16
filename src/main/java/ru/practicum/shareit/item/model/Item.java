@@ -11,11 +11,10 @@ public class Item {
     @Positive
     Long id;
     @Positive
-    Long ownerId;
-    @NotBlank
-    String name;
-    String description;
-    Boolean available;
+    private Long ownerId;
+    private String name;
+    private String description;
+    private Boolean available;
 
     public Item(Long id, Long ownerId, String name, String description, Boolean available) {
         this.id = id;

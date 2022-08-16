@@ -1,13 +1,15 @@
 package ru.practicum.shareit.user;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.exception.EmptyData;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import javax.validation.Valid;
 import java.util.List;
 
-
+@Slf4j
 @RestController
 @RequestMapping(path = "/users")
 public class UserController {
@@ -20,26 +22,34 @@ public class UserController {
 
     @PostMapping
     public UserDto createUser (@RequestBody @Valid UserDto userDto) {
+        log.info("Получен запрос к эндпоинту: POST: /users");
+        if(userDto.getEmail() == null || userDto.getName() == null) {
+            throw new EmptyData("не заполнена строка имени или электронной почты пользователя");
+        }
         return userService.createUser(userDto);
     }
 
     @PatchMapping("/{userId}")
     public UserDto updateUser(@PathVariable Long userId, @RequestBody UserDto userDto) {
+        log.info("Получен запрос к эндпоинту: PATCH: /users/{userId}");
         return userService.updateUser(userId, userDto);
     }
 
     @DeleteMapping("/{userId}")
     public void deleteUser(@PathVariable Long userId) {
+        log.info("Получен запрос к эндпоинту: DELETE: /users/{userId}");
         userService.deleteUser(userId);
     }
 
     @GetMapping("/{userId}")
     public UserDto getUserById(@PathVariable Long userId) {
+        log.info("Получен запрос к эндпоинту: GET: /users/{userId}");
         return userService.getUserById(userId);
     }
 
     @GetMapping
     public List<UserDto> getAllUsers() {
+        log.info("Получен запрос к эндпоинту: GET: /users");
         return userService.getAllUsers();
     }
 }
