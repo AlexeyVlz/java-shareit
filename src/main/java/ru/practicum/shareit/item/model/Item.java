@@ -4,16 +4,24 @@ import lombok.Data;
 import lombok.NonNull;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 
 @Data
 public class Item {
-
-    Long itemId;
-    Long userId;
-    @NonNull @NotBlank
+    @Positive
+    Long id;
+    @Positive
+    Long ownerId;
+    @NotBlank
     String name;
-    @NonNull @NotBlank
     String description;
-    @NonNull
     Boolean available;
+
+    public Item(Long id, Long ownerId, String name, String description, Boolean available) {
+        this.id = id;
+        this.ownerId = ownerId;
+        this.name = name;
+        this.description = description;
+        this.available = available;
+    }
 }

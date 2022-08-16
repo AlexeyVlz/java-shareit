@@ -1,8 +1,10 @@
 package ru.practicum.shareit.user;
 
 import org.springframework.stereotype.Component;
-import org.yaml.snakeyaml.constructor.DuplicateKeyException;
 import ru.practicum.shareit.exception.DuplicateException;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserMapper;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
