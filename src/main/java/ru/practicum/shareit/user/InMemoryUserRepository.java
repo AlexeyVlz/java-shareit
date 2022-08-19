@@ -1,8 +1,7 @@
 package ru.practicum.shareit.user;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.exception.ConflictDataExeption;
-import ru.practicum.shareit.exception.DuplicateException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
@@ -15,8 +14,13 @@ import java.util.Map;
 @Component
 public class InMemoryUserRepository implements UserRepository {
 
-    private Long userId = 0L;
     private final Map<Long, User> users = new HashMap<>();
+    private final UserMapper mapper;
+
+    @Autowired
+    public InMemoryUserRepository(UserMapper mapper) {
+        this.mapper = mapper;
+    }
 
     public Map<Long, User> getUsers() {
         return users;
@@ -24,27 +28,13 @@ public class InMemoryUserRepository implements UserRepository {
 
     @Override
     public UserDto createUser(UserDto userDto) {
-        for (User user : users.values()) {
-            if (user.getEmail().equals(userDto.getEmail())) {
-                throw new DuplicateException("Данная почта уже используется");
-            }
-        }
-        userDto.setId(++userId);
-        User newUser = UserMapper.mapUserDtoToUser(userDto);
+        User newUser = mapper.mapUserDtoToUser(userDto);
         users.put(newUser.getId(), newUser);
-        return UserMapper.mapUserToUserDto(newUser);
+        return mapper.mapUserToUserDto(newUser);
     }
 
     @Override
     public UserDto updateUser(Long userId, UserDto userDto) {
-        if (!users.containsKey(userId)) {
-            throw new NullPointerException(String.format("Пользователь с id %d в базе отсутствует", userId));
-        }
-        for (User user : users.values()) {
-            if (!user.getId().equals(userId) && user.getEmail().equals(userDto.getEmail())) {
-                throw new ConflictDataExeption("Данная электронная почта уже зарегистрирована");
-            }
-        }
         User updatedUser = users.get(userId);
         if (userDto.getName() != null) {
             updatedUser.setName(userDto.getName());
@@ -52,30 +42,24 @@ public class InMemoryUserRepository implements UserRepository {
         if (userDto.getEmail() != null) {
             updatedUser.setEmail(userDto.getEmail());
         }
-        return UserMapper.mapUserToUserDto(updatedUser);
+        return mapper.mapUserToUserDto(updatedUser);
     }
 
     @Override
     public void deleteUser(Long userId) {
-        if (!users.containsKey(userId)) {
-            throw new NullPointerException(String.format("Пользователь с id %d в базе отсутствует", userId));
-        }
         users.remove(userId);
     }
 
     @Override
     public UserDto getUserById(Long userId) {
-        if (!users.containsKey(userId)) {
-            throw new NullPointerException(String.format("Пользователь с id %d в базе отсутствует", userId));
-        }
-        return UserMapper.mapUserToUserDto(users.get(userId));
+        return mapper.mapUserToUserDto(users.get(userId));
     }
 
     @Override
     public List<UserDto> getAllUsers() {
         List<UserDto> allUsers = new ArrayList<>();
         for (User user : users.values()) {
-            allUsers.add(UserMapper.mapUserToUserDto(user));
+            allUsers.add(mapper.mapUserToUserDto(user));
         }
         return allUsers;
     }

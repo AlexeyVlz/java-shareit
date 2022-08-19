@@ -2,8 +2,9 @@ package ru.practicum.shareit.item;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exception.EmptyData;
+import ru.practicum.shareit.exception.Create;
 import ru.practicum.shareit.item.dto.ItemDto;
 
 import javax.validation.Valid;
@@ -22,12 +23,8 @@ public class ItemController {
     }
 
     @PostMapping
-    public ItemDto createItem(@RequestBody @Valid ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") Long ownerId) {
+    public ItemDto createItem(@Validated({Create.class}) @RequestBody ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") Long ownerId) {
         log.info("Получен запрос к эндпоинту: POST: /items");
-        if (itemDto.getDescription() == null || itemDto.getName() == null || itemDto.getAvailable() == null ||
-                itemDto.getName().equals("")) {
-            throw new EmptyData("Заполнены не все данные по создаваемой вещи");
-        }
         return itemService.createItem(itemDto, ownerId);
     }
 

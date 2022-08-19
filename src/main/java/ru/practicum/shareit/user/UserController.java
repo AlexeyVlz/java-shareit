@@ -2,11 +2,11 @@ package ru.practicum.shareit.user;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exception.EmptyData;
+import ru.practicum.shareit.exception.Create;
 import ru.practicum.shareit.user.dto.UserDto;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
@@ -22,11 +22,8 @@ public class UserController {
     }
 
     @PostMapping
-    public UserDto createUser(@RequestBody @Valid UserDto userDto) {
+    public UserDto createUser(@Validated({Create.class}) @RequestBody UserDto userDto) {
         log.info("Получен запрос к эндпоинту: POST: /users");
-        if (userDto.getEmail() == null || userDto.getName() == null) {
-            throw new EmptyData("не заполнена строка имени или электронной почты пользователя");
-        }
         return userService.createUser(userDto);
     }
 
