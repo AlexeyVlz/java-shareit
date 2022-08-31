@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.xml.bind.ValidationException;
+
 
 @RestControllerAdvice
 public class ErrorHandler {
@@ -25,8 +27,8 @@ public class ErrorHandler {
 
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleEmptyData(final EmptyData e) {
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleEmptyData(final DataNotFound e) {
         return new ErrorResponse(e.getMessage());
     }
 

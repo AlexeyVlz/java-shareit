@@ -5,7 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exception.Create;
+import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.InfoItemDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemMapper;
+import ru.practicum.shareit.item.model.Comment;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -23,34 +27,44 @@ public class ItemController {
     }
 
     @PostMapping
-    public ItemDto createItem(@Validated({Create.class}) @RequestBody ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") Long ownerId) {
+    public InfoItemDto createItem(@Validated({Create.class}) @RequestBody ItemDto itemDto,
+                                  @RequestHeader("X-Sharer-User-Id") Long ownerId) {
         log.info("Получен запрос к эндпоинту: POST: /items");
         return itemService.createItem(itemDto, ownerId);
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@PathVariable Long itemId, @RequestBody @Valid ItemDto itemDto,
-                              @RequestHeader("X-Sharer-User-Id") Long ownerId) {
+    public InfoItemDto updateItem(@PathVariable Long itemId, @RequestBody @Valid ItemDto itemDto,
+                                  @RequestHeader("X-Sharer-User-Id") Long ownerId) {
         log.info("Получен запрос к эндпоинту: PATCH: /items/{itemId}");
-        return itemService.updateItem(itemDto, itemId, ownerId);
+        itemDto.setId(itemId);
+        return itemService.updateItem(itemDto, ownerId);
 
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItemById(@PathVariable Long itemId, @RequestHeader("X-Sharer-User-Id") Long ownerId) {
+    public InfoItemDto getItemById(@PathVariable Long itemId, @RequestHeader("X-Sharer-User-Id") Long ownerId) {
         log.info("Получен запрос к эндпоинту: GET: /items/{itemId}");
-        return itemService.getItemById(itemId, ownerId);
+        return itemService.getItemById(itemId);
     }
 
     @GetMapping
-    public List<ItemDto> getAllItemsByOwnerId(@RequestHeader("X-Sharer-User-Id") Long ownerId) {
+    public List<InfoItemDto> getAllItemsByOwnerId(@RequestHeader("X-Sharer-User-Id") Long ownerId) {
         log.info("Получен запрос к эндпоинту: GET: /items");
         return itemService.getAllItemsByOwnerId(ownerId);
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchItems(@RequestParam String text) {
+    public List<InfoItemDto> searchItems(@RequestParam String text) {
         log.info("Получен запрос к эндпоинту: GET: /items/search");
         return itemService.searchItems(text);
     }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto createComment(@PathVariable Long itemId, @RequestHeader("X-Sharer-User-Id") Long userId,
+                                    @RequestBody CommentDto commentDto) {
+        log.info("Получен запрос к эндпоинту: POST: /items/{itemId}/comment");
+        return itemService.createComment(itemId, userId, commentDto);
+    }
+
 }

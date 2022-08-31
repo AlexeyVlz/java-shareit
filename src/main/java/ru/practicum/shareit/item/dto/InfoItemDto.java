@@ -1,0 +1,50 @@
+package ru.practicum.shareit.item.dto;
+
+import lombok.Data;
+import ru.practicum.shareit.booking.Booking;
+import ru.practicum.shareit.item.model.Comment;
+import ru.practicum.shareit.user.model.User;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Data
+public class InfoItemDto {
+
+    Long id;
+    private User owner;
+    private String name;
+    private String description;
+    private Boolean available;
+    private BookingDto lastBooking;
+    private BookingDto nextBooking;
+    private List<Comment> comments;
+
+    public InfoItemDto(Long id, User owner, String name, String description, Boolean available, List<Comment> comments) {
+        this.id = id;
+        this.owner = owner;
+        this.name = name;
+        this.description = description;
+        this.available = available;
+        this.comments = comments;
+    }
+
+    @Data
+    public static class BookingDto {
+        private Long id;
+        private Long bookerId;
+        private LocalDateTime start;
+        private LocalDateTime end;
+
+        public BookingDto(Long id, Long bookerId, LocalDateTime start, LocalDateTime end) {
+            this.id = id;
+            this.bookerId = bookerId;
+            this.start = start;
+            this.end = end;
+        }
+    }
+
+    public static BookingDto toBookingDto(Booking booking) {
+        return new BookingDto(booking.getId(), booking.getBookerId(), booking.getStart(), booking.getEnd());
+    }
+}

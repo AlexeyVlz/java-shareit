@@ -6,13 +6,16 @@ import ru.practicum.shareit.user.model.User;
 @Component
 public class UserMapper {
 
-    private Long generateId = 0L;
 
-    public UserDto mapUserToUserDto(User user) {
+    public static UserDto toUserDto(User user) {
         return new UserDto(user.getId(), user.getName(), user.getEmail());
     }
 
-    public User mapUserDtoToUser(UserDto userDto) {
-        return new User(++generateId, userDto.getName(), userDto.getEmail());
+    public static User toUser(UserDto userDto) {
+        return new User(userDto.getName(), userDto.getEmail());
+    }
+
+    public static User toUser(Long userId, UserDto userDto) {
+        return new User(userId, userDto.getName(), userDto.getEmail());
     }
 }
