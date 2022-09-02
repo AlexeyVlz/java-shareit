@@ -7,9 +7,7 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
-import javax.persistence.Column;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Component
 public class CommentMapper {

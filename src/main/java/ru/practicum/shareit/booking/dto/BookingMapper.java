@@ -38,20 +38,5 @@ public class BookingMapper {
                                     booking.getStart(),
                                     booking.getEnd(),
                                     booking.getState());
-        //return BookingMapper.setStatus(infoBookingDto);
     }
-
-    /*private static InfoBookingDto setStatus(InfoBookingDto infoBookingDto) {
-        if (infoBookingDto.getStatus().equals(State.APPROVED)) {
-            if (infoBookingDto.getStart().isAfter(LocalDateTime.now())) {
-                infoBookingDto.setStatus(State.FUTURE);
-            } else if (infoBookingDto.getEnd().isBefore(LocalDateTime.now())) {
-                infoBookingDto.setStatus(State.PAST);
-            } else if (Instant.now().isAfter(infoBookingDto.getStart().toInstant(ZoneOffset.UTC))
-                    && Instant.now().isBefore(infoBookingDto.getEnd().toInstant(ZoneOffset.UTC))) {
-                infoBookingDto.setStatus(State.CURRENT);
-            }
-        }
-        return infoBookingDto;
-    }*/
 }

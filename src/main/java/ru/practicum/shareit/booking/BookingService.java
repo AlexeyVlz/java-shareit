@@ -130,10 +130,5 @@ public class BookingService {
         if (item.getOwner().getId().equals(bookerId)) {
             throw new ValidationDataException("Владелец не может бранировать свою вещь");
         }
-        /*List<Booking> bookingsList = bookingRepository.findByItemId(bookingDto.getItemId());
-        if (bookingsList.stream().filter((b) -> (b.getEnd().isBefore(bookingDto.getStart()))
-                || (b.getStart().isAfter(bookingDto.getEnd()))).count() > 0) {
-            throw new ValidationDataException("На данный период времени вещь занята");
-        }*/
     }
 }

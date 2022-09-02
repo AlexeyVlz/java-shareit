@@ -17,14 +17,4 @@ public class InfoBookingDto {
     private LocalDateTime start;
     private LocalDateTime end;
     private State status;
-
-    /*public static class Item {
-        Long id;
-        String name;
-
-        public Item(Long id, String name) {
-            this.id = id;
-            this.name = name;
-        }
-    }*/
 }
