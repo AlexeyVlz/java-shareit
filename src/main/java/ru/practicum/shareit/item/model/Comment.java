@@ -29,4 +29,8 @@ public class Comment {
         this.authorId = authorId;
         this.created = created;
     }
+
+    public Comment() {
+
+    }
 }

@@ -5,11 +5,13 @@ import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.exception.DataNotFound;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -26,6 +28,9 @@ public class ItemMapper {
     }
 
     public InfoItemDto toInfoItemDto(Item item) {
+        if (item.getComments() == null) {
+            item.setComments(new ArrayList<Comment>());
+        }
         InfoItemDto infoItemDto = new InfoItemDto(item.getId(),
                 item.getOwner(),
                 item.getName(),
@@ -35,6 +40,21 @@ public class ItemMapper {
         List<Booking> bookingList = bookingRepository.findByItemId(infoItemDto.getId());
         infoItemDto.setLastBooking(InfoItemDto.toBookingDto(findLastBooking(bookingList)));
         infoItemDto.setNextBooking(InfoItemDto.toBookingDto(findNextBooking(bookingList)));
+        return infoItemDto;
+    }
+
+    public InfoItemDto toInfoItemDtoNotOwner(Item item) {
+        if (item.getComments() == null) {
+            item.setComments(new ArrayList<Comment>());
+        }
+        InfoItemDto infoItemDto = new InfoItemDto(item.getId(),
+                item.getOwner(),
+                item.getName(),
+                item.getDescription(),
+                item.getAvailable(),
+                item.getComments());
+        infoItemDto.setLastBooking(null);
+        infoItemDto.setNextBooking(null);
         return infoItemDto;
     }
 
@@ -48,7 +68,7 @@ public class ItemMapper {
     private Booking findLastBooking(List<Booking> bookingList) {
         return bookingList.stream()
                 .filter(b -> b.getEnd().isBefore(LocalDateTime.now()))
-                .min(Comparator.comparing(Booking::getEnd)).orElse(null);
+                .max(Comparator.comparing(Booking::getEnd)).orElse(null);
     }
 
     private Booking findNextBooking(List<Booking> bookingList) {

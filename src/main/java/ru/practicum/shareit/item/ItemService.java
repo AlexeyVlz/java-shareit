@@ -2,8 +2,11 @@ package ru.practicum.shareit.item;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.booking.State;
 import ru.practicum.shareit.exception.DataNotFound;
+import ru.practicum.shareit.exception.ErrorArgumentException;
 import ru.practicum.shareit.exception.ValidationDataException;
 import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Item;
@@ -42,8 +45,16 @@ public class ItemService {
         return mapper.toInfoItemDto(itemRepository.save(updateItemFromRepository(itemDto, ownerId, item)));
     }
 
-    public InfoItemDto getItemById(Long itemId) {
-        return mapper.toInfoItemDto(itemRepository.getById(itemId));
+    public InfoItemDto getItemById(Long itemId, Long userId) {
+        Item item = itemRepository.findById(itemId).orElseThrow(() -> new DataNotFound(
+                String.format("Вещь с id %d в базе данных не обнаружена", itemId)));
+        InfoItemDto infoItemDto;
+        if (item.getOwner().getId().equals((userId))) {
+            infoItemDto = mapper.toInfoItemDto(item);
+        } else {
+            infoItemDto = mapper.toInfoItemDtoNotOwner(item);
+        }
+        return infoItemDto;
     }
 
     public List<InfoItemDto> getAllItemsByOwnerId(Long ownerId) {
@@ -51,7 +62,7 @@ public class ItemService {
     }
 
     public List<InfoItemDto> searchItems(String text) {
-        return itemRepository.findByNameContainsOrDescriptionContains(text, text)
+        return itemRepository.findByNameContainsOrDescriptionContainsIgnoreCase(text, text)
                 .stream().map(mapper::toInfoItemDto).collect(Collectors.toList());
     }
 
@@ -60,9 +71,11 @@ public class ItemService {
                 String.format("Вещи с id %d в базе данных не обнаружен", itemId)));
         userRepository.findById(userId).orElseThrow(() -> new DataNotFound(
                 String.format("Пользователь с id %d в базе данных не обнаружен", userId)));
-        if (bookingRepository.findBookingItemByBooker(userId, itemId).size() == 0) {
-            throw new ValidationDataException("Оставить комментарий к вещи может только пользователь, " +
-                                                "бравший её в аренду");
+        List<Booking> bookingList = bookingRepository.findBookingsByBookerIdAndItemId(itemId, userId);
+        bookingList.removeIf((b) -> b.getState().equals(State.REJECTED));
+        if (bookingList.size() == 0) {
+            throw new ErrorArgumentException("Оставить комментарий к вещи может только пользователь, " +
+                    "бравший её в аренду");
         }
         return CommentMapper.toCommentDto(commentRepository.save(CommentMapper.toComment(itemId, userId, commentDto)));
     }
@@ -72,7 +85,7 @@ public class ItemService {
             throw new ValidationDataException("Некорректно указан собственник вещи");
         }
         if (itemDto.getName() != null) {
-            item.setName(item.getName());
+            item.setName(itemDto.getName());
         }
         if (itemDto.getDescription() != null) {
             item.setDescription(itemDto.getDescription());
@@ -83,3 +96,4 @@ public class ItemService {
         return item;
     }
 }
+

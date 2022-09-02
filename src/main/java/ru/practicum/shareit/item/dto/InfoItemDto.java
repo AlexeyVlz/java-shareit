@@ -45,6 +45,9 @@ public class InfoItemDto {
     }
 
     public static BookingDto toBookingDto(Booking booking) {
-        return new BookingDto(booking.getId(), booking.getBookerId(), booking.getStart(), booking.getEnd());
+        if (booking == null) {
+            return null;
+        }
+        return new BookingDto(booking.getId(), booking.getBooker().getId(), booking.getStart(), booking.getEnd());
     }
 }
