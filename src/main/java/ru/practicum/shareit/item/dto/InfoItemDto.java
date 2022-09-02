@@ -18,9 +18,9 @@ public class InfoItemDto {
     private Boolean available;
     private BookingDto lastBooking;
     private BookingDto nextBooking;
-    private List<Comment> comments;
+    private List<InfoCommentDto> comments;
 
-    public InfoItemDto(Long id, User owner, String name, String description, Boolean available, List<Comment> comments) {
+    public InfoItemDto(Long id, User owner, String name, String description, Boolean available, List<InfoCommentDto> comments) {
         this.id = id;
         this.owner = owner;
         this.name = name;

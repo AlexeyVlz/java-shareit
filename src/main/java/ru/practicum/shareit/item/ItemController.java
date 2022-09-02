@@ -8,6 +8,7 @@ import ru.practicum.shareit.exception.Create;
 import ru.practicum.shareit.exception.ErrorArgumentException;
 import ru.practicum.shareit.exception.NullDataException;
 import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.InfoCommentDto;
 import ru.practicum.shareit.item.dto.InfoItemDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
@@ -69,8 +70,8 @@ public class ItemController {
     }
 
     @PostMapping("/{itemId}/comment")
-    public CommentDto createComment(@PathVariable Long itemId, @RequestHeader("X-Sharer-User-Id") Long userId,
-                                    @RequestBody CommentDto commentDto) {
+    public InfoCommentDto createComment(@PathVariable Long itemId, @RequestHeader("X-Sharer-User-Id") Long userId,
+                                        @RequestBody CommentDto commentDto) {
         log.info("Получен запрос к эндпоинту: POST: /items/{itemId}/comment");
         if (commentDto.getText() == null || commentDto.getText().equals("")) {
             throw new ErrorArgumentException("Комментарий не может быть пустым");

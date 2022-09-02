@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class ItemMapper {
@@ -31,12 +32,14 @@ public class ItemMapper {
         if (item.getComments() == null) {
             item.setComments(new ArrayList<Comment>());
         }
+        List<InfoCommentDto> commentsList = item.getComments().stream().map(CommentMapper::toInfoCommentDto)
+                .collect(Collectors.toList());
         InfoItemDto infoItemDto = new InfoItemDto(item.getId(),
                 item.getOwner(),
                 item.getName(),
                 item.getDescription(),
                 item.getAvailable(),
-                item.getComments());
+                commentsList);
         List<Booking> bookingList = bookingRepository.findByItemId(infoItemDto.getId());
         infoItemDto.setLastBooking(InfoItemDto.toBookingDto(findLastBooking(bookingList)));
         infoItemDto.setNextBooking(InfoItemDto.toBookingDto(findNextBooking(bookingList)));
@@ -47,12 +50,14 @@ public class ItemMapper {
         if (item.getComments() == null) {
             item.setComments(new ArrayList<Comment>());
         }
+        List<InfoCommentDto> commentsList = item.getComments().stream().map(CommentMapper::toInfoCommentDto)
+                .collect(Collectors.toList());
         InfoItemDto infoItemDto = new InfoItemDto(item.getId(),
                 item.getOwner(),
                 item.getName(),
                 item.getDescription(),
                 item.getAvailable(),
-                item.getComments());
+                commentsList);
         infoItemDto.setLastBooking(null);
         infoItemDto.setNextBooking(null);
         return infoItemDto;

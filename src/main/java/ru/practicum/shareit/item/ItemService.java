@@ -12,6 +12,7 @@ import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,15 +24,18 @@ public class ItemService {
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
     private final ItemMapper mapper;
+    private final CommentMapper commentMapper;
 
     @Autowired
     public ItemService(ItemRepository itemRepository, ItemMapper mapper, UserRepository userRepository,
-                       BookingRepository bookingRepository, CommentRepository commentRepository) {
+                       BookingRepository bookingRepository, CommentRepository commentRepository,
+                       CommentMapper commentMapper) {
         this.itemRepository = itemRepository;
         this.mapper = mapper;
         this.userRepository = userRepository;
         this.bookingRepository = bookingRepository;
         this.commentRepository = commentRepository;
+        this.commentMapper = commentMapper;
     }
 
     public InfoItemDto createItem(ItemDto itemDto, Long ownerId) {
@@ -63,21 +67,22 @@ public class ItemService {
 
     public List<InfoItemDto> searchItems(String text) {
         return itemRepository.findByNameContainsOrDescriptionContainsIgnoreCase(text, text)
-                .stream().map(mapper::toInfoItemDto).collect(Collectors.toList());
+                .stream().filter((i) -> i.getAvailable()).map(mapper::toInfoItemDto).collect(Collectors.toList());
     }
 
-    public CommentDto createComment(Long itemId, Long userId, CommentDto commentDto) {
+    public InfoCommentDto createComment(Long itemId, Long userId, CommentDto commentDto) {
         itemRepository.findById(itemId).orElseThrow(() -> new DataNotFound(
                 String.format("Вещи с id %d в базе данных не обнаружен", itemId)));
         userRepository.findById(userId).orElseThrow(() -> new DataNotFound(
                 String.format("Пользователь с id %d в базе данных не обнаружен", userId)));
         List<Booking> bookingList = bookingRepository.findBookingsByBookerIdAndItemId(itemId, userId);
         bookingList.removeIf((b) -> b.getState().equals(State.REJECTED));
+        bookingList.removeIf((b) -> b.getEnd().isAfter(LocalDateTime.now()));
         if (bookingList.size() == 0) {
             throw new ErrorArgumentException("Оставить комментарий к вещи может только пользователь, " +
                     "бравший её в аренду");
         }
-        return CommentMapper.toCommentDto(commentRepository.save(CommentMapper.toComment(itemId, userId, commentDto)));
+        return CommentMapper.toInfoCommentDto(commentRepository.save(commentMapper.toComment(itemId, userId, commentDto)));
     }
 
     private Item updateItemFromRepository(ItemDto itemDto, Long ownerId, Item item) {
