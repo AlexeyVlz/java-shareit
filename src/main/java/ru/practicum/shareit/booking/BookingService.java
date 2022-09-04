@@ -54,11 +54,11 @@ public class BookingService {
         } else {
             booking.setState(State.REJECTED);
         }
-        //booking.getItem().setAvailable(false);
         return BookingMapper.toInfoBookingDto(bookingRepository.save(booking));
     }
 
     public InfoBookingDto getBookingById(Long bookingId, Long userId) {
+        userValidation(userId);
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new DataNotFound(
                 String.format("Бронирование с id %d в базе данных не обнаружен", bookingId)));
         if (!userId.equals(booking.getItem().getOwner().getId()) && !userId.equals(booking.getBooker().getId())) {
@@ -69,8 +69,7 @@ public class BookingService {
     }
 
     public List<InfoBookingDto> getBookingsByUserId(Long userId, String state) {
-        userRepository.findById(userId).orElseThrow(() -> new DataNotFound(
-                String.format("Пользователь с id %d в базе не обнаружена", userId)));
+        userValidation(userId);
         try {
             State.valueOf(state.toUpperCase());
         } catch (IllegalArgumentException e) {
@@ -81,8 +80,7 @@ public class BookingService {
     }
 
     public List<InfoBookingDto> getBookingsByOwnerId(Long userId, String state) {
-        userRepository.findById(userId).orElseThrow(() -> new DataNotFound(
-                String.format("Пользователь с id %d в базе не обнаружена", userId)));
+        userValidation(userId);
         try {
             State.valueOf(state.toUpperCase());
         } catch (IllegalArgumentException e) {
@@ -130,5 +128,10 @@ public class BookingService {
         if (item.getOwner().getId().equals(bookerId)) {
             throw new ValidationDataException("Владелец не может бранировать свою вещь");
         }
+    }
+
+    private void userValidation(Long userId) {
+        userRepository.findById(userId).orElseThrow(() -> new DataNotFound(
+                String.format("Пользователь с id %d в базе не обнаружена", userId)));
     }
 }

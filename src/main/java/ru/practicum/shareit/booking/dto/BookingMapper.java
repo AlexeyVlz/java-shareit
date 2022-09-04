@@ -31,7 +31,6 @@ public class BookingMapper {
     }
 
     public static InfoBookingDto toInfoBookingDto(Booking booking) {
-        //InfoBookingDto.Item item = new InfoBookingDto.Item(booking.getItem().getId(), booking.getItem().getName());
         return new InfoBookingDto(booking.getId(),
                                     booking.getBooker(),
                                     booking.getItem(),

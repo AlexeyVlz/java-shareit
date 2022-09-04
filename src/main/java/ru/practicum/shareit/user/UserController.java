@@ -30,7 +30,6 @@ public class UserController {
     @PatchMapping("/{userId}")
     public UserDto updateUser(@PathVariable Long userId, @RequestBody UserDto userDto) {
         log.info("Получен запрос к эндпоинту: PATCH: /users/{userId}");
-        //User user = UserMapper.toUser(userId, userDto);
         return userService.updateUser(userDto, userId);
     }
 

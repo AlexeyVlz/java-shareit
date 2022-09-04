@@ -39,19 +39,20 @@ public class ItemService {
     }
 
     public InfoItemDto createItem(ItemDto itemDto, Long ownerId) {
+        itemValidation(itemDto.getId());
+        userValidation(ownerId);
         return mapper.toInfoItemDto(itemRepository.save(mapper.toItem(itemDto, ownerId)));
     }
 
     public InfoItemDto updateItem(ItemDto itemDto, Long ownerId) {
-        Item item = itemRepository.findById(itemDto.getId()).orElseThrow(() -> new DataNotFound(
-                String.format("Вещь с id %d в базе данных не обнаружена", itemDto.getId())));
-
+        Item item = itemValidation(itemDto.getId());
+        userValidation(ownerId);
         return mapper.toInfoItemDto(itemRepository.save(updateItemFromRepository(itemDto, ownerId, item)));
     }
 
     public InfoItemDto getItemById(Long itemId, Long userId) {
-        Item item = itemRepository.findById(itemId).orElseThrow(() -> new DataNotFound(
-                String.format("Вещь с id %d в базе данных не обнаружена", itemId)));
+        userValidation(userId);
+        Item item = itemValidation(itemId);
         InfoItemDto infoItemDto;
         if (item.getOwner().getId().equals((userId))) {
             infoItemDto = mapper.toInfoItemDto(item);
@@ -62,6 +63,7 @@ public class ItemService {
     }
 
     public List<InfoItemDto> getAllItemsByOwnerId(Long ownerId) {
+        userValidation(ownerId);
         return itemRepository.findByOwnerId(ownerId).stream().map(mapper::toInfoItemDto).collect(Collectors.toList());
     }
 
@@ -71,10 +73,8 @@ public class ItemService {
     }
 
     public InfoCommentDto createComment(Long itemId, Long userId, CommentDto commentDto) {
-        itemRepository.findById(itemId).orElseThrow(() -> new DataNotFound(
-                String.format("Вещи с id %d в базе данных не обнаружен", itemId)));
-        userRepository.findById(userId).orElseThrow(() -> new DataNotFound(
-                String.format("Пользователь с id %d в базе данных не обнаружен", userId)));
+        itemValidation(itemId);
+        userValidation(userId);
         List<Booking> bookingList = bookingRepository.findBookingsByBookerIdAndItemId(itemId, userId);
         bookingList.removeIf((b) -> b.getState().equals(State.REJECTED));
         bookingList.removeIf((b) -> b.getEnd().isAfter(LocalDateTime.now()));
@@ -99,6 +99,16 @@ public class ItemService {
             item.setAvailable(itemDto.getAvailable());
         }
         return item;
+    }
+
+    private Item itemValidation(Long itemId) {
+        return itemRepository.findById(itemId).orElseThrow(() -> new DataNotFound(
+                String.format("Вещи с id %d в базе данных не обнаружен", itemId)));
+    }
+
+    private void userValidation(Long userId) {
+        userRepository.findById(userId).orElseThrow(() -> new DataNotFound(
+                String.format("Пользователь с id %d в базе данных не обнаружен", userId)));
     }
 }
 
