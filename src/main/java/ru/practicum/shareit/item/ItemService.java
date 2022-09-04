@@ -39,7 +39,6 @@ public class ItemService {
     }
 
     public InfoItemDto createItem(ItemDto itemDto, Long ownerId) {
-        itemValidation(itemDto.getId());
         userValidation(ownerId);
         return mapper.toInfoItemDto(itemRepository.save(mapper.toItem(itemDto, ownerId)));
     }
