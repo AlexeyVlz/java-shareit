@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import ru.practicum.shareit.exception.NullDataException;
+import ru.practicum.shareit.exception.DataNotFound;
 import ru.practicum.shareit.requests.dto.InfoItemRequestDto;
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
 import ru.practicum.shareit.requests.dto.ItemRequestMapper;
@@ -43,7 +43,7 @@ public class RequestService {
 
     public List<InfoItemRequestDto> getAllRequests(Long userId, PageRequest pageRequest) {
         userService.getUserById(userId);
-        return requestRepository.findAll(pageRequest)
+        return requestRepository.findAllByUserIdNot(userId, pageRequest)
                 .stream()
                 .map(ItemRequestMapper::toInfoItemRequestDto)
                 .collect(Collectors.toList());
@@ -52,7 +52,7 @@ public class RequestService {
     public InfoItemRequestDto getRequestById(Long requestId, Long userId) {
         userService.getUserById(userId);
         ItemRequest itemRequest = requestRepository.findById(requestId)
-            .orElseThrow(() -> new NullDataException(String.format("Запрос с id %d в базе не обнаружен", requestId)));
+            .orElseThrow(() -> new DataNotFound(String.format("Запрос с id %d в базе не обнаружен", requestId)));
         return ItemRequestMapper.toInfoItemRequestDto(itemRequest);
     }
 }

@@ -1,7 +1,7 @@
 package ru.practicum.shareit.requests;
 
 import lombok.Data;
-import ru.practicum.shareit.responses.Response;
+import ru.practicum.shareit.item.model.Item;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -27,7 +27,7 @@ public class ItemRequest {
     private LocalDateTime creationTime;
     @OneToMany
     @JoinColumn(name = "request_id")
-    private List<Response> items;
+    private List<Item> items;
 
     public ItemRequest() {
 

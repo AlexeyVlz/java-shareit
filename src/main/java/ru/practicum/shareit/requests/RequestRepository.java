@@ -1,6 +1,6 @@
 package ru.practicum.shareit.requests;
 
-import org.apache.coyote.Request;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -13,4 +13,6 @@ public interface RequestRepository extends JpaRepository<ItemRequest, Long> {
             "where ir.userId = ?1 " +
             "order by ir.creationTime desc ")
     List<ItemRequest> findAllByUserId(Long userId);
+
+    List<ItemRequest> findAllByUserIdNot(Long userId, PageRequest pageRequest);
 }

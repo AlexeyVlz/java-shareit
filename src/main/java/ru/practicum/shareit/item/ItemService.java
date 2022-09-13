@@ -11,7 +11,6 @@ import ru.practicum.shareit.exception.ErrorArgumentException;
 import ru.practicum.shareit.exception.ValidationDataException;
 import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.responses.ResponseService;
 import ru.practicum.shareit.user.UserRepository;
 
 import java.time.LocalDateTime;
@@ -28,27 +27,22 @@ public class ItemService {
     private final ItemMapper mapper;
     private final CommentMapper commentMapper;
 
-    private final ResponseService responseService;
 
     @Autowired
     public ItemService(ItemRepository itemRepository, ItemMapper mapper, UserRepository userRepository,
                        BookingRepository bookingRepository, CommentRepository commentRepository,
-                       CommentMapper commentMapper, ResponseService responseService) {
+                       CommentMapper commentMapper) {
         this.itemRepository = itemRepository;
         this.mapper = mapper;
         this.userRepository = userRepository;
         this.bookingRepository = bookingRepository;
         this.commentRepository = commentRepository;
         this.commentMapper = commentMapper;
-        this.responseService = responseService;
     }
 
     public InfoItemDto createItem(ItemDto itemDto, Long ownerId) {
         userValidation(ownerId);
         Item item = itemRepository.save(mapper.toItem(itemDto, ownerId));
-        if (itemDto.getRequestId() != null) {
-            responseService.addResponseByRequestId(item, itemDto.getRequestId());
-        }
         return mapper.toInfoItemDto(item);
     }
 
