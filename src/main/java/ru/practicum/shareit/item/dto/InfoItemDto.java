@@ -18,14 +18,17 @@ public class InfoItemDto {
     private BookingDto lastBooking;
     private BookingDto nextBooking;
     private List<InfoCommentDto> comments;
+    private Long requestId;
 
-    public InfoItemDto(Long id, User owner, String name, String description, Boolean available, List<InfoCommentDto> comments) {
+    public InfoItemDto(Long id, User owner, String name, String description,
+                       Boolean available, List<InfoCommentDto> comments, Long requestId) {
         this.id = id;
         this.owner = owner;
         this.name = name;
         this.description = description;
         this.available = available;
         this.comments = comments;
+        this.requestId = requestId;
     }
 
     @Data

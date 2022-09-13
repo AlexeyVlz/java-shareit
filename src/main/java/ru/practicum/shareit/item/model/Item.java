@@ -26,6 +26,8 @@ public class Item {
     @OneToMany
     @JoinColumn(name = "item_id")
     private List<Comment> comments;
+    @Column(name = "request_id")
+    private Long requestId;
 
 
 
@@ -41,10 +43,11 @@ public class Item {
     public Item() {
     }
 
-    public Item(User owner, String name, String description, Boolean available) {
+    public Item(User owner, String name, String description, Boolean available, Long requestId) {
         this.owner = owner;
         this.name = name;
         this.description = description;
         this.available = available;
+        this.requestId = requestId;
     }
 }

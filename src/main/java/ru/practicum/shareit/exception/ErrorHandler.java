@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.persistence.PersistenceException;
 
 
 @RestControllerAdvice
@@ -57,7 +58,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleConflictDataExeption(final ConflictDataExeption e) {
+    public ErrorResponse handleConflictDataException(final ConflictDataExeption e) {
         return new ErrorResponse(e.getMessage());
     }
 

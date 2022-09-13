@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
@@ -10,6 +11,7 @@ import ru.practicum.shareit.exception.ErrorArgumentException;
 import ru.practicum.shareit.exception.ValidationDataException;
 import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.responses.ResponseService;
 import ru.practicum.shareit.user.UserRepository;
 
 import java.time.LocalDateTime;
@@ -26,21 +28,28 @@ public class ItemService {
     private final ItemMapper mapper;
     private final CommentMapper commentMapper;
 
+    private final ResponseService responseService;
+
     @Autowired
     public ItemService(ItemRepository itemRepository, ItemMapper mapper, UserRepository userRepository,
                        BookingRepository bookingRepository, CommentRepository commentRepository,
-                       CommentMapper commentMapper) {
+                       CommentMapper commentMapper, ResponseService responseService) {
         this.itemRepository = itemRepository;
         this.mapper = mapper;
         this.userRepository = userRepository;
         this.bookingRepository = bookingRepository;
         this.commentRepository = commentRepository;
         this.commentMapper = commentMapper;
+        this.responseService = responseService;
     }
 
     public InfoItemDto createItem(ItemDto itemDto, Long ownerId) {
         userValidation(ownerId);
-        return mapper.toInfoItemDto(itemRepository.save(mapper.toItem(itemDto, ownerId)));
+        Item item = itemRepository.save(mapper.toItem(itemDto, ownerId));
+        if (itemDto.getRequestId() != null) {
+            responseService.addResponseByRequestId(item, itemDto.getRequestId());
+        }
+        return mapper.toInfoItemDto(item);
     }
 
     public InfoItemDto updateItem(ItemDto itemDto, Long ownerId) {
@@ -61,14 +70,14 @@ public class ItemService {
         return infoItemDto;
     }
 
-    public List<InfoItemDto> getAllItemsByOwnerId(Long ownerId) {
+    public List<InfoItemDto> getAllItemsByOwnerId(Long ownerId, PageRequest pageRequest) {
         userValidation(ownerId);
-        return itemRepository.findByOwnerId(ownerId).stream().map(mapper::toInfoItemDto).collect(Collectors.toList());
+        return itemRepository.findByOwnerId(ownerId, pageRequest).stream().map(mapper::toInfoItemDto).collect(Collectors.toList());
     }
 
-    public List<InfoItemDto> searchItems(String text) {
-        return itemRepository.findByNameContainsOrDescriptionContainsIgnoreCase(text, text)
-                .stream().filter((i) -> i.getAvailable()).map(mapper::toInfoItemDto).collect(Collectors.toList());
+    public List<InfoItemDto> searchItems(String text, PageRequest pageRequest) {
+        return itemRepository.findByNameContainsOrDescriptionContainsIgnoreCase(text, text, pageRequest)
+                .stream().filter(Item::getAvailable).map(mapper::toInfoItemDto).collect(Collectors.toList());
     }
 
     public InfoCommentDto createComment(Long itemId, Long userId, CommentDto commentDto) {

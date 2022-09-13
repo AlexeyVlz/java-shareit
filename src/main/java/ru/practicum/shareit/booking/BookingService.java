@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingMapper;
@@ -68,25 +69,25 @@ public class BookingService {
         return BookingMapper.toInfoBookingDto(booking);
     }
 
-    public List<InfoBookingDto> getBookingsByUserId(Long userId, String state) {
+    public List<InfoBookingDto> getBookingsByUserId(Long userId, String state, PageRequest pageRequest) {
         userValidation(userId);
         try {
             State.valueOf(state.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new ErrorArgumentException("Unknown state: UNSUPPORTED_STATUS");
         }
-        return setBookingStatus(bookingRepository.findBookingsByBooker(userId), state).stream()
+        return setBookingStatus(bookingRepository.findBookingsByBookerId(userId, pageRequest), state).stream()
                 .map(BookingMapper::toInfoBookingDto).collect(Collectors.toList());
     }
 
-    public List<InfoBookingDto> getBookingsByOwnerId(Long userId, String state) {
+    public List<InfoBookingDto> getBookingsByOwnerId(Long userId, String state, PageRequest pageRequest) {
         userValidation(userId);
         try {
             State.valueOf(state.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new ErrorArgumentException("Unknown state: UNSUPPORTED_STATUS");
         }
-        return setBookingStatus(bookingRepository.findBookingsByOwner(userId), state).stream()
+        return setBookingStatus(bookingRepository.findBookingsByItemOwnerId(userId, pageRequest), state).stream()
                 .map(BookingMapper::toInfoBookingDto).collect(Collectors.toList());
     }
 

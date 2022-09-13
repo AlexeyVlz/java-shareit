@@ -2,6 +2,8 @@ package ru.practicum.shareit.item;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exception.Create;
@@ -14,6 +16,8 @@ import ru.practicum.shareit.item.dto.ItemDto;
 
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,18 +59,30 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<InfoItemDto> getAllItemsByOwnerId(@RequestHeader("X-Sharer-User-Id") Long ownerId) {
+    public List<InfoItemDto> getAllItemsByOwnerId(@RequestHeader("X-Sharer-User-Id") Long ownerId,
+                                                  @PositiveOrZero @RequestParam(name = "from", defaultValue = "0")
+                                                  Integer from,
+                                                  @Positive @RequestParam(name = "size", defaultValue = "10")
+                                                  Integer size) {
         log.info("Получен запрос к эндпоинту: GET: /items");
-        return itemService.getAllItemsByOwnerId(ownerId);
+        int page = from / size;
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return itemService.getAllItemsByOwnerId(ownerId, pageRequest);
     }
 
     @GetMapping("/search")
-    public List<InfoItemDto> searchItems(@RequestParam String text) {
+    public List<InfoItemDto> searchItems(@RequestParam String text,
+                                         @PositiveOrZero @RequestParam(name = "from", defaultValue = "0")
+                                         Integer from,
+                                         @Positive @RequestParam(name = "size", defaultValue = "10")
+                                         Integer size) {
         log.info("Получен запрос к эндпоинту: GET: /items/search");
         if (text.equals("")) {
             return new ArrayList<>();
         }
-        return itemService.searchItems(text);
+        int page = from / size;
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return itemService.searchItems(text, pageRequest);
     }
 
     @PostMapping("/{itemId}/comment")

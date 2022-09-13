@@ -39,7 +39,8 @@ public class ItemMapper {
                 item.getName(),
                 item.getDescription(),
                 item.getAvailable(),
-                commentsList);
+                commentsList,
+                item.getRequestId());
         List<Booking> bookingList = bookingRepository.findByItemId(infoItemDto.getId());
         infoItemDto.setLastBooking(InfoItemDto.toBookingDto(findLastBooking(bookingList)));
         infoItemDto.setNextBooking(InfoItemDto.toBookingDto(findNextBooking(bookingList)));
@@ -57,7 +58,8 @@ public class ItemMapper {
                 item.getName(),
                 item.getDescription(),
                 item.getAvailable(),
-                commentsList);
+                commentsList,
+                item.getRequestId());
         infoItemDto.setLastBooking(null);
         infoItemDto.setNextBooking(null);
         return infoItemDto;
@@ -67,7 +69,7 @@ public class ItemMapper {
     public Item toItem(ItemDto itemDto, Long ownerId) {
         User user = userRepository.findById(ownerId).orElseThrow(() -> new DataNotFound(
                 String.format("Пользователь с id %d в базе данных не обнаружен", ownerId)));
-        return new Item(user, itemDto.getName(), itemDto.getDescription(), itemDto.getAvailable());
+        return new Item(user, itemDto.getName(), itemDto.getDescription(), itemDto.getAvailable(), itemDto.getRequestId());
     }
 
     private Booking findLastBooking(List<Booking> bookingList) {
