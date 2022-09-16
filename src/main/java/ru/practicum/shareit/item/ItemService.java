@@ -42,14 +42,16 @@ public class ItemService {
 
     public InfoItemDto createItem(ItemDto itemDto, Long ownerId) {
         userValidation(ownerId);
-        Item item = itemRepository.save(mapper.toItem(itemDto, ownerId));
-        return mapper.toInfoItemDto(item);
+        return mapper.toInfoItemDto(itemRepository.save(mapper.toItem(itemDto, ownerId)));
     }
 
     public InfoItemDto updateItem(ItemDto itemDto, Long ownerId) {
         Item item = itemValidation(itemDto.getId());
+        if (!item.getOwner().getId().equals(ownerId)) {
+            throw new ValidationDataException("Некорректно указан собственник вещи");
+        }
         userValidation(ownerId);
-        return mapper.toInfoItemDto(itemRepository.save(updateItemFromRepository(itemDto, ownerId, item)));
+        return mapper.toInfoItemDto(itemRepository.save(item));
     }
 
     public InfoItemDto getItemById(Long itemId, Long userId) {
@@ -57,9 +59,9 @@ public class ItemService {
         Item item = itemValidation(itemId);
         InfoItemDto infoItemDto;
         if (item.getOwner().getId().equals((userId))) {
-            infoItemDto = mapper.toInfoItemDto(item);
-        } else {
             infoItemDto = mapper.toInfoItemDtoNotOwner(item);
+        } else {
+            infoItemDto = mapper.toInfoItemDto(item);
         }
         return infoItemDto;
     }
@@ -85,22 +87,6 @@ public class ItemService {
                     "бравший её в аренду");
         }
         return CommentMapper.toInfoCommentDto(commentRepository.save(commentMapper.toComment(itemId, userId, commentDto)));
-    }
-
-    private Item updateItemFromRepository(ItemDto itemDto, Long ownerId, Item item) {
-        if (!item.getOwner().getId().equals(ownerId)) {
-            throw new ValidationDataException("Некорректно указан собственник вещи");
-        }
-        if (itemDto.getName() != null) {
-            item.setName(itemDto.getName());
-        }
-        if (itemDto.getDescription() != null) {
-            item.setDescription(itemDto.getDescription());
-        }
-        if (itemDto.getAvailable() != null) {
-            item.setAvailable(itemDto.getAvailable());
-        }
-        return item;
     }
 
     private Item itemValidation(Long itemId) {

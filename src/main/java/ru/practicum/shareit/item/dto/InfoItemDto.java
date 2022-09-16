@@ -44,6 +44,9 @@ public class InfoItemDto {
             this.start = start;
             this.end = end;
         }
+
+        public BookingDto() {
+        }
     }
 
     public static BookingDto toBookingDto(Booking booking) {

@@ -50,4 +50,21 @@ public class Item {
         this.available = available;
         this.requestId = requestId;
     }
+
+    public Item(Long id, User owner, String name, String description, Boolean available, List<Comment> comments) {
+        this.id = id;
+        this.owner = owner;
+        this.name = name;
+        this.description = description;
+        this.available = available;
+        this.comments = comments;
+    }
+
+    public Item(User owner, String name, String description, Boolean available, List<Comment> comments) {
+        this.owner = owner;
+        this.name = name;
+        this.description = description;
+        this.available = available;
+        this.comments = comments;
+    }
 }
