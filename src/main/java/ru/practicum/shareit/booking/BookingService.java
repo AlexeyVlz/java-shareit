@@ -116,7 +116,6 @@ public class BookingService {
                     .collect(Collectors.toList());
         } else if (State.valueOf(state.toUpperCase()).equals(State.FUTURE)) {
             return bookings.stream().filter((b) -> LocalDateTime.now().isBefore(b.getStart()))
-                    .filter((b) -> b.getState().equals(State.APPROVED))
                     .collect(Collectors.toList());
         } else if (State.valueOf(state.toUpperCase()).equals(State.PAST)) {
             return bookings.stream().filter((b) -> LocalDateTime.now().isAfter(b.getEnd()))
@@ -125,7 +124,6 @@ public class BookingService {
         } else if (State.valueOf(state.toUpperCase()).equals(State.CURRENT)) {
             return bookings.stream().filter((b) -> LocalDateTime.now().isAfter(b.getStart())
                     && LocalDateTime.now().isBefore(b.getEnd()))
-                    .filter((b) -> b.getState().equals(State.APPROVED))
                     .collect(Collectors.toList());
         }
         return bookings;

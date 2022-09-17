@@ -3,11 +3,9 @@ package ru.practicum.shareit.item;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exception.Create;
-import ru.practicum.shareit.exception.ErrorArgumentException;
 import ru.practicum.shareit.exception.NullDataException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.InfoCommentDto;
@@ -24,6 +22,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/items")
+@Validated
 public class ItemController {
 
     private final ItemService itemService;
@@ -87,11 +86,11 @@ public class ItemController {
 
     @PostMapping("/{itemId}/comment")
     public InfoCommentDto createComment(@PathVariable Long itemId, @RequestHeader("X-Sharer-User-Id") Long userId,
-                                        @RequestBody CommentDto commentDto) {
+                                        @Valid @RequestBody CommentDto commentDto) {
         log.info("Получен запрос к эндпоинту: POST: /items/{itemId}/comment");
-        if (commentDto.getText() == null || commentDto.getText().equals("")) {
+        /*if (commentDto.getText() == null || commentDto.getText().equals("")) {
             throw new ErrorArgumentException("Комментарий не может быть пустым");
-        }
+        }*/
         return itemService.createComment(itemId, userId, commentDto);
     }
 

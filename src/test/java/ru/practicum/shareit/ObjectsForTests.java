@@ -32,6 +32,10 @@ public class ObjectsForTests {
         return new User(2L, "user2", "user2@mail.ru");
     }
 
+    public static UserDto getUserDto2() {
+        return new UserDto(2L, "user2", "user2@mail.ru");
+    }
+
     public static UserDto getUserDtoError() {
         return new UserDto(777L, "user2", "user2@mail.ru");
     }
@@ -46,12 +50,17 @@ public class ObjectsForTests {
                 true);
     }
 
+    public static ItemDto getItemDto3() {
+        return new ItemDto(3L, "молоток", "молоток с деревянной ручкой",
+                true);
+    }
+
     public static InfoItemDto getInfoItemDto1() {
         return new InfoItemDto(1L, getUser1(), "кувалда", "кувалда с деревянной ручкой",
                 true, new ArrayList<>(), 1L);
     }
 
-    public static InfoItemDto ItemDtoToOwner() {
+    public static InfoItemDto itemDtoToOwner() {
         InfoItemDto infoItemDto = new InfoItemDto(1L, getUser1(), "кувалда", "кувалда с деревянной ручкой",
                 true, new ArrayList<>(), 1L);
         infoItemDto.setLastBooking(new InfoItemDto.BookingDto());
@@ -137,8 +146,8 @@ public class ObjectsForTests {
                 LocalDateTime.of(2023, 10, 1, 12, 0),
                 LocalDateTime.of(2023, 10, 2, 12, 0), State.WAITING);
         Booking rejectedBooking = new Booking(2L, getUser1(), getItem3(),
-                LocalDateTime.of(2023, 10, 1, 12, 0),
-                LocalDateTime.of(2023, 10, 2, 12, 0), State.REJECTED);
+                LocalDateTime.of(2021, 10, 1, 12, 0),
+                LocalDateTime.of(2021, 10, 2, 12, 0), State.REJECTED);
         Booking futureBooking = new Booking(3L, getUser1(), getItem3(),
                 LocalDateTime.of(2023, 10, 1, 12, 0),
                 LocalDateTime.of(2023, 10, 2, 12, 0), State.APPROVED);
@@ -163,8 +172,8 @@ public class ObjectsForTests {
 
     public static InfoBookingDto rejectedInfoBookingDTO() {
         return new InfoBookingDto(2L, getUser1(), getItem3(),
-                LocalDateTime.of(2023, 10, 1, 12, 0),
-                LocalDateTime.of(2023, 10, 2, 12, 0), State.REJECTED);
+                LocalDateTime.of(2021, 10, 1, 12, 0),
+                LocalDateTime.of(2021, 10, 2, 12, 0), State.REJECTED);
     }
 
     public static InfoBookingDto futureInfoBookingDTO() {

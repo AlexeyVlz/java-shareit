@@ -1,13 +1,10 @@
 package ru.practicum.shareit.itemTests;
 
-import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.ObjectsForTests;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
@@ -18,7 +15,6 @@ import ru.practicum.shareit.item.CommentRepository;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.ItemService;
 import ru.practicum.shareit.item.dto.*;
-import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -46,7 +42,7 @@ class ItemServiceTest {
     ItemDto itemDto1 = ObjectsForTests.getItemDto1();
     Item item1 = ObjectsForTests.getItem1();
     InfoItemDto infoItemDto1 = ObjectsForTests.getInfoItemDto1();
-    InfoItemDto infoItemDtoToOwner = ObjectsForTests.ItemDtoToOwner();
+    InfoItemDto infoItemDtoToOwner = ObjectsForTests.itemDtoToOwner();
     Booking futureBooking = ObjectsForTests.futureBooking();
     Booking pastBooking = ObjectsForTests.pastBooking();
     Booking rejectedBooking = ObjectsForTests.rejectedBooking();
@@ -75,7 +71,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void updateItem () {
+    void updateItem() {
         userValidation();
         itemValidation();
         when(mapper.toInfoItemDto(item1)).thenReturn(infoItemDto1);
@@ -88,7 +84,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void getItemById () {
+    void getItemById() {
         userValidation();
         itemValidation();
         when(mapper.toInfoItemDto(any())).thenReturn(infoItemDto1);
@@ -98,7 +94,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void getAllItemsByOwnerId () {
+    void getAllItemsByOwnerId() {
         userValidation();
         when(itemRepository.findByOwnerId(any(), any()))
                 .thenReturn(new PageImpl<>(Collections.singletonList(item1)));
@@ -108,7 +104,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void searchItems () {
+    void searchItems() {
         when(itemRepository.findByNameContainsOrDescriptionContainsIgnoreCase(any(), any(), any()))
                 .thenReturn(new ArrayList<>(Collections.singletonList(item1)));
         when(mapper.toInfoItemDto(any())).thenReturn(infoItemDto1);
@@ -117,7 +113,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void createComment () {
+    void createComment() {
         userValidation();
         itemValidation();
         when(bookingRepository.findBookingsByBookerIdAndItemId(3L, 3L))
@@ -160,11 +156,10 @@ class ItemServiceTest {
          when(itemRepository.findById(anyLong()))
                  .thenAnswer(invocationOnMock -> {
                      Long id = invocationOnMock.getArgument(0, Long.class);
-                     if (id == 777){
+                     if (id == 777) {
                          throw new DataNotFound(
                                  String.format("Вещи с id %d в базе данных не обнаружен", 777));
-                     }
-                     else {
+                     } else {
                          return Optional.of(item1);
                      }
                  });

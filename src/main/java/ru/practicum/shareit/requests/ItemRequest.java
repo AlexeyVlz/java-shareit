@@ -7,9 +7,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * // TODO .
- */
+
 @Entity
 @Data
 @Table(name = "requests")

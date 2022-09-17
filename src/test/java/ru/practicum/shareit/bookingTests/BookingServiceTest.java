@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.exceptions.misusing.UnfinishedStubbingException;
 import org.springframework.data.domain.PageRequest;
 import ru.practicum.shareit.ObjectsForTests;
 import ru.practicum.shareit.booking.Booking;
@@ -24,6 +23,7 @@ import ru.practicum.shareit.user.model.User;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -206,7 +206,7 @@ class BookingServiceTest {
         Assertions.assertEquals(bookingService.getBookingsByUserId(1L, "REJECTED", PageRequest.of(0, 10)),
                 new ArrayList<>(List.of(ObjectsForTests.rejectedInfoBookingDTO())));
         Assertions.assertEquals(bookingService.getBookingsByUserId(1L, "FUTURE", PageRequest.of(0, 10)),
-                new ArrayList<>(List.of(ObjectsForTests.futureInfoBookingDTO())));
+                new ArrayList<>(Arrays.asList(ObjectsForTests.waitingInfoBookingDTO(), ObjectsForTests.futureInfoBookingDTO())));
         Assertions.assertEquals(bookingService.getBookingsByUserId(1L, "PAST", PageRequest.of(0, 10)),
                 new ArrayList<>(List.of(ObjectsForTests.pastInfoBookingDTO())));
         Assertions.assertEquals(bookingService.getBookingsByUserId(1L, "CURRENT", PageRequest.of(0, 10)),
@@ -234,7 +234,7 @@ class BookingServiceTest {
         Assertions.assertEquals(bookingService.getBookingsByOwnerId(1L, "REJECTED", PageRequest.of(0, 10)),
                 new ArrayList<>(List.of(ObjectsForTests.rejectedInfoBookingDTO())));
         Assertions.assertEquals(bookingService.getBookingsByOwnerId(1L, "FUTURE", PageRequest.of(0, 10)),
-                new ArrayList<>(List.of(ObjectsForTests.futureInfoBookingDTO())));
+                new ArrayList<>(Arrays.asList(ObjectsForTests.waitingInfoBookingDTO(), ObjectsForTests.futureInfoBookingDTO())));
         Assertions.assertEquals(bookingService.getBookingsByOwnerId(1L, "PAST", PageRequest.of(0, 10)),
                 new ArrayList<>(List.of(ObjectsForTests.pastInfoBookingDTO())));
         Assertions.assertEquals(bookingService.getBookingsByOwnerId(1L, "CURRENT", PageRequest.of(0, 10)),

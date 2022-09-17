@@ -47,6 +47,7 @@ public class ItemService {
 
     public InfoItemDto updateItem(ItemDto itemDto, Long ownerId) {
         Item item = itemValidation(itemDto.getId());
+        updateItem(itemDto, item);
         if (!item.getOwner().getId().equals(ownerId)) {
             throw new ValidationDataException("Некорректно указан собственник вещи");
         }
@@ -59,9 +60,9 @@ public class ItemService {
         Item item = itemValidation(itemId);
         InfoItemDto infoItemDto;
         if (item.getOwner().getId().equals((userId))) {
-            infoItemDto = mapper.toInfoItemDtoNotOwner(item);
-        } else {
             infoItemDto = mapper.toInfoItemDto(item);
+        } else {
+            infoItemDto = mapper.toInfoItemDtoNotOwner(item);
         }
         return infoItemDto;
     }
@@ -97,6 +98,22 @@ public class ItemService {
     private void userValidation(Long userId) {
         userRepository.findById(userId).orElseThrow(() -> new DataNotFound(
                 String.format("Пользователь с id %d в базе данных не обнаружен", userId)));
+    }
+
+    private Item updateItem(ItemDto itemDto, Item item) {
+        if (itemDto.getName() != null) {
+            item.setName(itemDto.getName());
+        }
+        if (itemDto.getDescription() != null) {
+            item.setDescription(itemDto.getDescription());
+        }
+        if (itemDto.getAvailable() != null) {
+            item.setAvailable(itemDto.getAvailable());
+        }
+        if (itemDto.getRequestId() != null) {
+            item.setRequestId(itemDto.getRequestId());
+        }
+        return item;
     }
 }
 

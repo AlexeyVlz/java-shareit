@@ -14,9 +14,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
-/**
- * // TODO .
- */
+
 @Slf4j
 @RestController
 @RequestMapping(path = "/requests")

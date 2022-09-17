@@ -1,12 +1,9 @@
 package ru.practicum.shareit.bookingTests;
 
-import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.annotation.Rollback;
-import ru.practicum.shareit.ObjectsForTests;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.State;
@@ -44,8 +41,8 @@ public class BookingRepositoryTests {
     Item item3;
     Booking booking1;
     Booking booking2;
-    LocalDateTime START = LocalDateTime.of(2023, 10, 1, 12, 0);
-    LocalDateTime END = LocalDateTime.of(2023, 10, 2, 12, 0);
+    static final LocalDateTime START = LocalDateTime.of(2023, 10, 1, 12, 0);
+    static final LocalDateTime END = LocalDateTime.of(2023, 10, 2, 12, 0);
 
     @BeforeEach
     void beforeEach() {
