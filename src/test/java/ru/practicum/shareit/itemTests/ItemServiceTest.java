@@ -89,8 +89,8 @@ class ItemServiceTest {
         itemValidation();
         when(mapper.toInfoItemDto(any())).thenReturn(infoItemDto1);
         when(mapper.toInfoItemDtoNotOwner(any())).thenReturn(infoItemDtoToOwner);
-        Assertions.assertEquals(itemService.getItemById(1L, 1L), infoItemDtoToOwner);
-        Assertions.assertEquals(itemService.getItemById(1L, 333L), infoItemDto1);
+        Assertions.assertEquals(itemService.getItemById(1L, 1L), infoItemDto1);
+        Assertions.assertEquals(itemService.getItemById(1L, 333L), infoItemDtoToOwner);
     }
 
     @Test
