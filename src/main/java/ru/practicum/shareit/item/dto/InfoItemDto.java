@@ -21,14 +21,13 @@ public class InfoItemDto {
     private Long requestId;
 
     public InfoItemDto(Long id, User owner, String name, String description,
-                       Boolean available, List<InfoCommentDto> comments, Long requestId) {
+                       Boolean available, List<InfoCommentDto> comments) {
         this.id = id;
         this.owner = owner;
         this.name = name;
         this.description = description;
         this.available = available;
         this.comments = comments;
-        this.requestId = requestId;
     }
 
     @Data

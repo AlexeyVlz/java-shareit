@@ -42,7 +42,7 @@ public class ObjectsForTests {
 
     public static Item getItem1() {
         return new Item(1L, getUser1(), "кувалда", "кувалда с деревянной ручкой",
-                true, new ArrayList<Comment>());
+                true, new ArrayList<>());
     }
 
     public static ItemDto getItemDto1() {
@@ -56,13 +56,16 @@ public class ObjectsForTests {
     }
 
     public static InfoItemDto getInfoItemDto1() {
-        return new InfoItemDto(1L, getUser1(), "кувалда", "кувалда с деревянной ручкой",
-                true, new ArrayList<>(), 1L);
+        InfoItemDto infoItemDto =  new InfoItemDto(1L, getUser1(), "кувалда", "кувалда с деревянной ручкой",
+                true, new ArrayList<>());
+        infoItemDto.setRequestId(1L);
+        return infoItemDto;
     }
 
     public static InfoItemDto itemDtoToOwner() {
         InfoItemDto infoItemDto = new InfoItemDto(1L, getUser1(), "кувалда", "кувалда с деревянной ручкой",
-                true, new ArrayList<>(), 1L);
+                true, new ArrayList<>());
+        infoItemDto.setRequestId(1L);
         infoItemDto.setLastBooking(new InfoItemDto.BookingDto());
         infoItemDto.setNextBooking(new InfoItemDto.BookingDto());
         return infoItemDto;
@@ -70,12 +73,12 @@ public class ObjectsForTests {
 
     public static Item getItem2() {
         return new Item(2L, getUser2(), "кувалда", "кувалда с металлической ручкой",
-                true, new ArrayList<Comment>());
+                true, new ArrayList<>());
     }
 
     public static Item getItem3() {
         return new Item(3L, getUser2(), "молоток", "молоток с деревянной ручкой",
-                true, new ArrayList<Comment>());
+                true, new ArrayList<>());
     }
 
     public static Booking futureBooking() {
