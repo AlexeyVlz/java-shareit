@@ -1,6 +1,6 @@
 package ru.practicum.shareit.requests;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -15,17 +15,11 @@ import java.util.stream.Collectors;
 
 
 @Service
+@RequiredArgsConstructor
 public class RequestService {
 
     private final RequestRepository requestRepository;
     private final UserService userService;
-
-
-    @Autowired
-    public RequestService(RequestRepository requestRepository, UserService userService) {
-        this.requestRepository = requestRepository;
-        this.userService = userService;
-    }
 
     public InfoItemRequestDto createRequest(ItemRequestDto itemRequestDto, Long userId) {
         userService.getUserById(userId);
