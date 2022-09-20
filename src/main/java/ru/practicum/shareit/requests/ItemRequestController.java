@@ -1,7 +1,7 @@
 package ru.practicum.shareit.requests;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.validation.annotation.Validated;
@@ -19,10 +19,14 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/requests")
 @Validated
-@RequiredArgsConstructor
 public class ItemRequestController {
 
     private final RequestService requestService;
+
+    @Autowired
+    public ItemRequestController(RequestService requestService) {
+        this.requestService = requestService;
+    }
 
     @PostMapping
     public InfoItemRequestDto createRequest(@RequestHeader("X-Sharer-User-Id") Long userId,

@@ -1,6 +1,6 @@
 package ru.practicum.shareit.requests;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +15,16 @@ import java.util.stream.Collectors;
 
 
 @Service
-@RequiredArgsConstructor
 public class RequestService {
 
     private final RequestRepository requestRepository;
     private final UserService userService;
+
+    @Autowired
+    public RequestService(RequestRepository requestRepository, UserService userService) {
+        this.requestRepository = requestRepository;
+        this.userService = userService;
+    }
 
     public InfoItemRequestDto createRequest(ItemRequestDto itemRequestDto, Long userId) {
         userService.getUserById(userId);
@@ -46,7 +51,7 @@ public class RequestService {
     public InfoItemRequestDto getRequestById(Long requestId, Long userId) {
         userService.getUserById(userId);
         ItemRequest itemRequest = requestRepository.findById(requestId)
-            .orElseThrow(() -> new DataNotFound(String.format("Запрос с id %d в базе не обнаружен", requestId)));
+                .orElseThrow(() -> new DataNotFound(String.format("Запрос с id %d в базе не обнаружен", requestId)));
         return ItemRequestMapper.toInfoItemRequestDto(itemRequest);
     }
 }
