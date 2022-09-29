@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
@@ -26,6 +27,7 @@ public class ItemService {
     private final ItemMapper mapper;
     private final CommentMapper commentMapper;
 
+
     @Autowired
     public ItemService(ItemRepository itemRepository, ItemMapper mapper, UserRepository userRepository,
                        BookingRepository bookingRepository, CommentRepository commentRepository,
@@ -45,8 +47,12 @@ public class ItemService {
 
     public InfoItemDto updateItem(ItemDto itemDto, Long ownerId) {
         Item item = itemValidation(itemDto.getId());
+        updateItem(itemDto, item);
+        if (!item.getOwner().getId().equals(ownerId)) {
+            throw new ValidationDataException("Некорректно указан собственник вещи");
+        }
         userValidation(ownerId);
-        return mapper.toInfoItemDto(itemRepository.save(updateItemFromRepository(itemDto, ownerId, item)));
+        return mapper.toInfoItemDto(itemRepository.save(item));
     }
 
     public InfoItemDto getItemById(Long itemId, Long userId) {
@@ -61,14 +67,14 @@ public class ItemService {
         return infoItemDto;
     }
 
-    public List<InfoItemDto> getAllItemsByOwnerId(Long ownerId) {
+    public List<InfoItemDto> getAllItemsByOwnerId(Long ownerId, PageRequest pageRequest) {
         userValidation(ownerId);
-        return itemRepository.findByOwnerId(ownerId).stream().map(mapper::toInfoItemDto).collect(Collectors.toList());
+        return itemRepository.findByOwnerId(ownerId, pageRequest).stream().map(mapper::toInfoItemDto).collect(Collectors.toList());
     }
 
-    public List<InfoItemDto> searchItems(String text) {
-        return itemRepository.findByNameContainsOrDescriptionContainsIgnoreCase(text, text)
-                .stream().filter((i) -> i.getAvailable()).map(mapper::toInfoItemDto).collect(Collectors.toList());
+    public List<InfoItemDto> searchItems(String text, PageRequest pageRequest) {
+        return itemRepository.findByNameContainsOrDescriptionContainsIgnoreCase(text, text, pageRequest)
+                .stream().filter(Item::getAvailable).map(mapper::toInfoItemDto).collect(Collectors.toList());
     }
 
     public InfoCommentDto createComment(Long itemId, Long userId, CommentDto commentDto) {
@@ -84,10 +90,17 @@ public class ItemService {
         return CommentMapper.toInfoCommentDto(commentRepository.save(commentMapper.toComment(itemId, userId, commentDto)));
     }
 
-    private Item updateItemFromRepository(ItemDto itemDto, Long ownerId, Item item) {
-        if (!item.getOwner().getId().equals(ownerId)) {
-            throw new ValidationDataException("Некорректно указан собственник вещи");
-        }
+    private Item itemValidation(Long itemId) {
+        return itemRepository.findById(itemId).orElseThrow(() -> new DataNotFound(
+                String.format("Вещи с id %d в базе данных не обнаружен", itemId)));
+    }
+
+    private void userValidation(Long userId) {
+        userRepository.findById(userId).orElseThrow(() -> new DataNotFound(
+                String.format("Пользователь с id %d в базе данных не обнаружен", userId)));
+    }
+
+    private Item updateItem(ItemDto itemDto, Item item) {
         if (itemDto.getName() != null) {
             item.setName(itemDto.getName());
         }
@@ -97,17 +110,10 @@ public class ItemService {
         if (itemDto.getAvailable() != null) {
             item.setAvailable(itemDto.getAvailable());
         }
+        if (itemDto.getRequestId() != null) {
+            item.setRequestId(itemDto.getRequestId());
+        }
         return item;
-    }
-
-    private Item itemValidation(Long itemId) {
-        return itemRepository.findById(itemId).orElseThrow(() -> new DataNotFound(
-                String.format("Вещи с id %d в базе данных не обнаружен", itemId)));
-    }
-
-    private void userValidation(Long userId) {
-        userRepository.findById(userId).orElseThrow(() -> new DataNotFound(
-                String.format("Пользователь с id %d в базе данных не обнаружен", userId)));
     }
 }
 

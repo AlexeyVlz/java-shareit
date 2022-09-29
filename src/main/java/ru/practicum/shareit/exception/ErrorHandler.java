@@ -57,7 +57,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleConflictDataExeption(final ConflictDataExeption e) {
+    public ErrorResponse handleConflictDataException(final ConflictDataExeption e) {
         return new ErrorResponse(e.getMessage());
     }
 

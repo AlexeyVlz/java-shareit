@@ -29,19 +29,19 @@ public class UserController {
 
     @PatchMapping("/{userId}")
     public UserDto updateUser(@PathVariable Long userId, @RequestBody UserDto userDto) {
-        log.info("Получен запрос к эндпоинту: PATCH: /users/{userId}");
+        log.info("Получен запрос к эндпоинту: PATCH: /users/{id}");
         return userService.updateUser(userDto, userId);
     }
 
     @DeleteMapping("/{userId}")
     public void deleteUser(@PathVariable Long userId) {
-        log.info("Получен запрос к эндпоинту: DELETE: /users/{userId}");
+        log.info("Получен запрос к эндпоинту: DELETE: /users/{id}");
         userService.deleteUser(userId);
     }
 
     @GetMapping("/{userId}")
     public UserDto getUserById(@PathVariable Long userId) {
-        log.info("Получен запрос к эндпоинту: GET: /users/{userId}");
+        log.info("Получен запрос к эндпоинту: GET: /users/{id}");
         return userService.getUserById(userId);
     }
 

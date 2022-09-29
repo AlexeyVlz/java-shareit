@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.exception.DataNotFound;
-import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
@@ -30,7 +29,7 @@ public class ItemMapper {
 
     public InfoItemDto toInfoItemDto(Item item) {
         if (item.getComments() == null) {
-            item.setComments(new ArrayList<Comment>());
+            item.setComments(new ArrayList<>());
         }
         List<InfoCommentDto> commentsList = item.getComments().stream().map(CommentMapper::toInfoCommentDto)
                 .collect(Collectors.toList());
@@ -40,6 +39,9 @@ public class ItemMapper {
                 item.getDescription(),
                 item.getAvailable(),
                 commentsList);
+        if (item.getRequestId() != null) {
+            infoItemDto.setRequestId(item.getRequestId());
+        }
         List<Booking> bookingList = bookingRepository.findByItemId(infoItemDto.getId());
         infoItemDto.setLastBooking(InfoItemDto.toBookingDto(findLastBooking(bookingList)));
         infoItemDto.setNextBooking(InfoItemDto.toBookingDto(findNextBooking(bookingList)));
@@ -48,7 +50,7 @@ public class ItemMapper {
 
     public InfoItemDto toInfoItemDtoNotOwner(Item item) {
         if (item.getComments() == null) {
-            item.setComments(new ArrayList<Comment>());
+            item.setComments(new ArrayList<>());
         }
         List<InfoCommentDto> commentsList = item.getComments().stream().map(CommentMapper::toInfoCommentDto)
                 .collect(Collectors.toList());
@@ -58,6 +60,9 @@ public class ItemMapper {
                 item.getDescription(),
                 item.getAvailable(),
                 commentsList);
+        if (item.getRequestId() != null) {
+            infoItemDto.setRequestId(item.getRequestId());
+        }
         infoItemDto.setLastBooking(null);
         infoItemDto.setNextBooking(null);
         return infoItemDto;
@@ -67,7 +72,7 @@ public class ItemMapper {
     public Item toItem(ItemDto itemDto, Long ownerId) {
         User user = userRepository.findById(ownerId).orElseThrow(() -> new DataNotFound(
                 String.format("Пользователь с id %d в базе данных не обнаружен", ownerId)));
-        return new Item(user, itemDto.getName(), itemDto.getDescription(), itemDto.getAvailable());
+        return new Item(user, itemDto.getName(), itemDto.getDescription(), itemDto.getAvailable(), itemDto.getRequestId());
     }
 
     private Booking findLastBooking(List<Booking> bookingList) {
