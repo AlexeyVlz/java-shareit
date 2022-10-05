@@ -3,6 +3,7 @@ package ru.practicum.shareit.item;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDto;
@@ -56,7 +57,7 @@ public class ItemController {
                                                   Integer size) {
         log.info("Получен запрос к эндпоинту: GET: /items");
         int page = from / size;
-        PageRequest pageRequest = PageRequest.of(page, size);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").ascending());
         return itemService.getAllItemsByOwnerId(ownerId, pageRequest);
     }
 
