@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 
-
 @RestControllerAdvice
 public class GatewayErrorHandler {
 
@@ -27,6 +26,13 @@ public class GatewayErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public GatewayErrorResponse handleNullDataException(final NullDataException e) {
+        StackTraceElement[] stack = e.getStackTrace();
+        return new GatewayErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public GatewayErrorResponse handleIllegalArgumentException(final IllegalArgumentException e) {
         return new GatewayErrorResponse(e.getMessage());
     }
 
@@ -34,6 +40,7 @@ public class GatewayErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public GatewayErrorResponse handleThrowable(final Throwable e) {
+        StackTraceElement[] stack = e.getStackTrace();
         return new GatewayErrorResponse("Произошла непредвиденная ошибка.");
     }
 }
