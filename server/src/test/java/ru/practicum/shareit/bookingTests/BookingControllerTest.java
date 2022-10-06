@@ -47,35 +47,6 @@ class BookingControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(infoBookingDto)));
-
-        /*bookingDto.setItemId(null);
-        mvc.perform(post("/bookings")
-                        .content(mapper.writeValueAsString(bookingDto))
-                        .header("X-Sharer-User-Id", "1")
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        bookingDto.setItemId(1L);
-        bookingDto.setStart(null);
-        mvc.perform(post("/bookings")
-                        .content(mapper.writeValueAsString(bookingDto))
-                        .header("X-Sharer-User-Id", "1")
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        bookingDto.setStart(LocalDateTime.of(2023, 10, 1, 12, 0));
-        bookingDto.setEnd(null);
-        mvc.perform(post("/bookings")
-                        .content(mapper.writeValueAsString(bookingDto))
-                        .header("X-Sharer-User-Id", "1")
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());*/
     }
 
     @Test

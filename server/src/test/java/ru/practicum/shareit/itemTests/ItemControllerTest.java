@@ -47,45 +47,6 @@ class ItemControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(infoItemDto)));
-
-        /*itemDto.setId(-1L);
-        mvc.perform(post("/items")
-                        .content(mapper.writeValueAsString(itemDto))
-                        .header("X-Sharer-User-Id", "1")
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        itemDto.setId(1L);
-        itemDto.setName("");
-        mvc.perform(post("/items")
-                        .content(mapper.writeValueAsString(itemDto))
-                        .header("X-Sharer-User-Id", "1")
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        itemDto.setName("кувалда");
-        itemDto.setDescription("");
-        mvc.perform(post("/items")
-                        .content(mapper.writeValueAsString(itemDto))
-                        .header("X-Sharer-User-Id", "1")
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        itemDto.setDescription("кувалда с деревянной ручкой");
-        itemDto.setAvailable(null);
-        mvc.perform(post("/items")
-                        .content(mapper.writeValueAsString(itemDto))
-                        .header("X-Sharer-User-Id", "1")
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());*/
     }
 
     @Test
@@ -102,15 +63,6 @@ class ItemControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(infoItemDto)));
-
-        /*itemDto.setRequestId(-1L);
-        mvc.perform(patch("/items/{itemId}", 1)
-                        .content(mapper.writeValueAsString(itemDto))
-                        .header("X-Sharer-User-Id", "1")
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());*/
     }
 
     @Test
@@ -187,24 +139,6 @@ class ItemControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(List.of(infoItemDto))));
-
-        /*mvc.perform(get("/items/search")
-                        .param("text", "")
-                        .param("from", "-1")
-                        .param("size", "1")
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isInternalServerError());
-
-        mvc.perform(get("/items/search")
-                        .param("text", "")
-                        .param("from", "0")
-                        .param("size", "0")
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isInternalServerError());*/
     }
 
     @Test
@@ -221,14 +155,5 @@ class ItemControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(infoCommentDto)));
-
-        /*commentDto.setText("");
-        mvc.perform(post("/items/{itemId}/comment", 1)
-                        .content(mapper.writeValueAsString(commentDto))
-                        .header("X-Sharer-User-Id", "1")
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());*/
     }
 }
